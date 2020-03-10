@@ -7,16 +7,16 @@ For the MVP of the project, it focuses on mainly on creating <b>landslide hazard
 ### Technical details
 Technical details can be broken down to 3 different main topics:
 1. <b>Backend</b> <br> API with ASP.NET CORE 
-2. <b>Data</b> <br> MSSQL and File geodatabase both with Entity framework
+2. <b>Data</b> <br> MSSQL and File geodatabase
 3. <b>UI</b> <br> React SPA is the core of the UI with a heavy use of react-leaflet
 <br><br>
 <b>Additional details</b><br>
-<b>Authentication</b> <br> Role based authentication/authorization will be used, a JWT token will handle the access. Roles : User, Admin  
+<br> Role based authentication/authorization will be used, a JWT token will handle the access. Roles : User, Admin  
 
 
 ### Features
 * Responsive design
-* 3 pages should be accessable, 1 of those for admin only. They are the home page, login page, and the admin page.
+* 5 pages should be accessable, 1 of those for admin only. They are the home page, login page, register, forgot password and the admin page.
 * Home page should contain a navbar, a map, and some additional information on the map that is displayed
 * The map itself should be interactive, it should be able to be zoomable, a legend should be displayed when needed. The different hazard zones should display some statistics when hovered over.
 * On page load, the user should be prompted to allow to use current location, if they allow it, the map should be zoomed to that location, otherwise a general area should be displayed first.
@@ -28,3 +28,4 @@ Technical details can be broken down to 3 different main topics:
 * User should get clear instructions at all parts, about events, like calculation completed (toastr for example), and also directions, nothing should be visible that arent used, hoverable infos should be visible for buttons an inputs, and an example steps should also be visible.
 * Admin page will be a form, where admins can submit additional historical data, that will help with the precision of the calculation.
 * If a selected area will have insufficient data, calculation will not be made, and a notification shall be given to the user, that due to not reliable calculation, zonation can't be made at that location.
+* Register form consists of a username, password, password again, email, country, vocation fields.
