@@ -29,3 +29,12 @@ Technical details can be broken down to 3 different main topics:
 * Admin page will be a form, where admins can submit additional historical data, that will help with the precision of the calculation.
 * If a selected area will have insufficient data, calculation will not be made, and a notification shall be given to the user, that due to not reliable calculation, zonation can't be made at that location.
 * Register form consists of a username, password, password again, email, country, vocation fields.
+
+Main page:
+![alt text](https://github.com/sador23/HazardMapper/images/main.jpg "Main")
+
+Register page:
+![alt text](https://github.com/sador23/HazardMapper/images/register.jpg "Register")
+
+Login page:
+![alt text](https://github.com/sador23/HazardMapper/images/login.jpg "Login")
