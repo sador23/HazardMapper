@@ -31,10 +31,10 @@ Technical details can be broken down to 3 different main topics:
 * Register form consists of a username, password, password again, email, country, vocation fields.
 
 Main page:
-![alt text](https://github.com/sador23/HazardMapper/images/main.jpg "Main")
+![alt text](https://github.com/sador23/HazardMapper/blob/master/images/main.jpg "Main")
 
 Register page:
-![alt text](https://github.com/sador23/HazardMapper/images/register.jpg "Register")
+![alt text](https://github.com/sador23/HazardMapper/blob/master/images/register.jpg "Register")
 
 Login page:
-![alt text](https://github.com/sador23/HazardMapper/images/login.jpg "Login")
+![alt text](https://github.com/sador23/HazardMapper/blob/master/images/login.jpg "Login")
