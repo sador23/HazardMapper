@@ -38,3 +38,6 @@ Register page:
 
 Login page:
 ![alt text](https://github.com/sador23/HazardMapper/blob/master/images/login.jpg "Login")
+
+Basic UML:
+![alt text](https://github.com/sador23/HazardMapper/blob/master/images/basicuml.jpg "Login")
