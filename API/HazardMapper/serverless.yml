@@ -1,0 +1,16 @@
+﻿provider:
+  name: aws
+  runtime: dotnetcore2.1
+  region: eu-west-1
+  stage: ${opt:stage, 'dev'} # Set the default stage used. Default is dev
+
+package:
+  artifact: bin/release/netcoreapp2.1/deploy-package.zip
+
+functions:
+  api:
+    handler: exampleservice::exampleservice.LambdaEntryPoint::FunctionHandlerAsync
+    events:
+     - http:
+         path: /{proxy+}
+         method: ANY
