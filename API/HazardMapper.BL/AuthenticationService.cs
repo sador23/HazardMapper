@@ -3,20 +3,42 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using HazardMapper.Common.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 namespace HazardMapper.BL
 {
     public class AuthenticationService
     {
-        public JwtSecurityToken CreateToken(UserLoginModel user)
+        private UserManager<User> _userManager;
+        private RoleManager<IdentityRole> _roleManager;
+
+        public AuthenticationService(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
-            var authClaims = new[]
+            _userManager = userManager;
+            _roleManager = roleManager;
+        }
+
+        public async Task<JwtSecurityToken> CreateToken(User user)
+        {
+            IdentityOptions _options = new IdentityOptions();
+            var authClaims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Username),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(_options.ClaimsIdentity.UserNameClaimType, user.UserName)
             };
+
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
+
+            authClaims.AddRange(userClaims);
+            foreach (var role in roles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("WillBeReplacedByActualKeyThatIsNotStaticHere"));
 
