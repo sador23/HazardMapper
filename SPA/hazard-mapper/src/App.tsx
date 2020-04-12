@@ -1,10 +1,12 @@
 import React from 'react';
 import RouterWrapper from './components/router';
+import {Header} from "./components/header";
 
 function App() {
   return (
       <div className="App">
-        <RouterWrapper />
+          <Header/>
+          <RouterWrapper />
       </div>
   );
 }

@@ -5,6 +5,7 @@ li a {
 
 li a:hover {
     text-decoration: none;
+    color:black;
 }
 
 li {

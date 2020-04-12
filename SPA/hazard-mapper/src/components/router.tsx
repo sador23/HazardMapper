@@ -1,6 +1,6 @@
 import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import Register from "./register";
-import {Login} from "./login";
+import Login from "./login";
 import MainMap from "./mainMap";
 import React from "react";
 import './router.css';

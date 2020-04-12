@@ -1,3 +1,6 @@
-import { combineEpics, ofType } from 'redux-observable';
+import { combineEpics } from 'redux-observable';
+import {loginEpic} from "./userManagementEpic";
 
-export default combineEpics();
+export default combineEpics(
+    loginEpic
+);
