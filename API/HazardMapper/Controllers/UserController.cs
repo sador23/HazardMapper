@@ -58,14 +58,14 @@ namespace HazardMapper.API.Controllers
                 var createdUser = await _userManager.CreateAsync(user,model.Password);
                 if (!createdUser.Succeeded)
                 {
-                    return new ForbidResult();
+                    return new ForbidResult(string.Join(',', createdUser.Errors));
                 }
 
 
-                var result = await _userManager.AddToRoleAsync(user, "user");
+                var result = await _userManager.AddToRoleAsync(user, "User");
                 if (!result.Succeeded)
                 {
-                    return new ForbidResult();
+                    return new ForbidResult(string.Join(',', result.Errors));
                 }
 
                 return Ok();

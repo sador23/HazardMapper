@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using HazardMapper.BL;
 using HazardMapper.Common.Models;
@@ -6,12 +7,15 @@ using HazardMapper.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Serialization;
 
 namespace HazardMapper
 {
@@ -27,12 +31,35 @@ namespace HazardMapper
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddJsonOptions(options =>
+                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAny",
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:3000")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+
+            });
+
             services.AddDbContext<UserDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetValue<string>("DefaultConnection")));
+
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<UserDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
+                options.HttpsPort = 5001;
+            });
 
             services.AddAuthentication(options =>
                 {
@@ -62,20 +89,15 @@ namespace HazardMapper
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseHsts();
-            }
-
+            app.UseHsts();
+            app.UseCors("AllowAny");
             app.UseAuthentication();
             app.UseHttpsRedirection();
+            
             app.UseMvc();
 
             var provider = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope().ServiceProvider;
+            Initialize(provider);
         }
 
         private void RegisterServices(IServiceCollection services)
@@ -87,6 +109,37 @@ namespace HazardMapper
         private void ConfigureSettings()
         {
             Configuration.Get<HazardMapperSettings>();
+        }
+
+        //TODO remove this when DB init is properly implemented
+        public static void Initialize(IServiceProvider serviceProvider)
+        {
+            var context = serviceProvider.GetRequiredService<UserDbContext>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+            if (!context.Roles.Any())
+            {
+                var role = new IdentityRole("User");
+                roleManager.CreateAsync(role).Wait();
+                role = new IdentityRole("Admin");
+                roleManager.CreateAsync(role).Wait();
+            }
+
+            if (!context.Users.Any())
+            {
+                var user = new User()
+                {
+                    Email = "test@test.com",
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    UserName = "Test"
+                };
+
+                var result = userManager.CreateAsync(user, "Test12@a").Result;
+                userManager.AddToRoleAsync(user, "Admin");
+            }
+
+
         }
     }
 }

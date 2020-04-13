@@ -1,15 +1,20 @@
 import React from "react";
-import "./login.css";
+import "./userManagement.css";
 // @ts-ignore
 import { connect } from 'react-redux';
 import {login, LoginInterface} from "../actions/userManagementActions";
 import {LoginModel} from "../common/Login";
+import {Redirect} from "react-router";
 
 interface IMapDispatchToProps {
     login: (user : LoginModel)  => LoginInterface;
 }
 
-class Login extends React.Component<IMapDispatchToProps, LoginModel> {
+interface IMapStateToProps {
+    jwt : string;
+}
+
+class Login extends React.Component<IMapDispatchToProps & IMapStateToProps, LoginModel> {
     constructor(props : any) {
         super(props);
         this.state = {
@@ -27,6 +32,10 @@ class Login extends React.Component<IMapDispatchToProps, LoginModel> {
     }
 
     render() {
+        if(this.props.jwt !== null && this.props.jwt !== undefined && this.props.jwt !== ''){
+            return (<Redirect to='/home' />);
+        }
+
         return <div className="main-container container">
             <form className="form-group">
                 <label htmlFor="username">Username</label>
@@ -49,7 +58,11 @@ class Login extends React.Component<IMapDispatchToProps, LoginModel> {
 
 const mapDispatchToProps = { login }
 
+const mapStateToProps = (state : any) => ({
+    jwt : state.jwt
+});
+
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(Login)

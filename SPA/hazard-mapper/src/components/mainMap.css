@@ -1,0 +1,9 @@
+.map-main-container{
+    height: 500px;
+    width: 600px;
+    float: right;
+}
+
+.map-main-toolbar{
+    float:left;
+}

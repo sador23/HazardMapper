@@ -1,17 +1,14 @@
 import {initialState} from "../Store/store";
 import {LOGIN, LoginInterface, SAVEJWT, SaveJWT} from "../actions/userManagementActions";
 
-export function userManagementReducer(
-    state = initialState,
+export function loginReducer(
+    state = initialState.jwt,
     action: SaveJWT | LoginInterface
 ) {
-    console.log(action.type);
     switch (action.type) {
         case SAVEJWT:
-            return Object.assign({}, state, {
-                    jwt : action.jwt
-                })
+            return action.jwt;
         default:
-            return state
+            return state;
     }
 }

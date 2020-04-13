@@ -16,13 +16,13 @@ export const login  = (user : LoginModel)  : LoginInterface => {
     }
 }
 
-interface Register{
+export interface RegisterInterface{
     type :typeof REGISTER;
     model : RegisterModel;
 }
 
-const REGISTER = "REGISTER";
-const register = (model : RegisterModel) : Register => {
+export const REGISTER = "REGISTER";
+export const register = (model : RegisterModel) : RegisterInterface => {
     return{
         type: REGISTER,
         model : model
@@ -42,4 +42,16 @@ export const saveJWT = (jwt : string) : SaveJWT => {
     }
 }
 
-export type UserManagementActions = LoginInterface | Register | SaveJWT;
+
+export const SUCCESSFUL_REGISTER = "SUCCESSFUL_REGISTER";
+export interface SucessfulRegister{
+    type :typeof SUCCESSFUL_REGISTER;
+}
+
+export const sucessfulRegister = () : SucessfulRegister => {
+    return{
+        type: SUCCESSFUL_REGISTER,
+    }
+}
+
+export type UserManagementActions = LoginInterface | RegisterInterface | SaveJWT;
