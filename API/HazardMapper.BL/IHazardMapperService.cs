@@ -5,6 +5,6 @@ namespace HazardMapper.BL
 {
     public interface IHazardMapperService
     {
-        Task<string> GenerateElevationProfileAsync(ElevationRequestModel model);
+        Task<string> GenerateElevationRequestAsync(ElevationRequestModel model);
     }
 }

@@ -22,7 +22,7 @@ namespace HazardMapper.BL
             this.httpClientWrapper = httpClientWrapper;
         }
 
-        public async Task<string> GenerateElevationProfileAsync(ElevationRequestModel model)
+        public async Task<string> GenerateElevationRequestAsync(ElevationRequestModel model)
         {
             throw new NotImplementedException();
         }

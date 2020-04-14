@@ -24,7 +24,7 @@ namespace HazardMapper.API.Controllers
         [Route("getElevation")]
         public async Task<IActionResult> GetElevationAsync([FromBody] ElevationRequestModel model)
         {
-            var result = await _hazardMapperService.GenerateElevationProfileAsync(model);
+            var result = await _hazardMapperService.GenerateElevationRequestAsync(model);
             return Ok(result);
         }
     }
