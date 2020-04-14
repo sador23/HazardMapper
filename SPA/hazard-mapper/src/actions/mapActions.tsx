@@ -1,3 +1,5 @@
+import {LatLng} from "react-leaflet";
+
 export const CHANGE_LAT = 'CHANGE_LAT';
 export interface ChangeLat {
     type: typeof CHANGE_LAT;
@@ -34,5 +36,18 @@ export const changeZoom  = (zoom : number)  : ChangeZoom => {
     return {
         type : CHANGE_ZOOM,
         zoom
+    }
+}
+
+export const FETCH_ELEVATION = 'FETCH_ELEVATION';
+export interface FetchElevation {
+    type: typeof FETCH_ELEVATION;
+    data: LatLng[];
+}
+
+export const fetchElevation  = (data : LatLng[])  : FetchElevation => {
+    return {
+        type : FETCH_ELEVATION,
+        data
     }
 }

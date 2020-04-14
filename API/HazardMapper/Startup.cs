@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using HazardMapper.BL;
+using HazardMapper.Common.Helpers;
 using HazardMapper.Common.Models;
 using HazardMapper.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -32,9 +33,15 @@ namespace HazardMapper
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddJsonOptions(options =>
-                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                //.AddJsonOptions(options =>
+                //    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
+
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                // Use the default property (Pascal) casing
+                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            });
 
             services.AddCors(options =>
             {
@@ -93,8 +100,12 @@ namespace HazardMapper
             app.UseCors("AllowAny");
             app.UseAuthentication();
             app.UseHttpsRedirection();
-            
-            app.UseMvc();
+
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute("Main", "api/{controller}/{action=Get}/{id?}");
+            });
 
             var provider = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope().ServiceProvider;
             Initialize(provider);
@@ -102,7 +113,10 @@ namespace HazardMapper
 
         private void RegisterServices(IServiceCollection services)
         {
+            
             services.AddTransient<AuthenticationService>();
+            services.AddTransient<HttpClientWrapper>();
+            services.AddHttpClient<HttpClientWrapper>();
             services.AddTransient<IHazardMapperService, HazardMapperService>();
         }
 

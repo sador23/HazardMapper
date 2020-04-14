@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Esri.ArcGISRuntime" Version="100.7.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.2.0" />
   </ItemGroup>
 

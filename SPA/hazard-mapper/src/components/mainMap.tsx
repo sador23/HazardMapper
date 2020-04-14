@@ -1,16 +1,25 @@
 import React from "react";
 // @ts-ignore
 import { connect } from 'react-redux';
-import { Map, Marker, Popup, TileLayer } from 'react-leaflet'
+import { Map, Marker, Popup, TileLayer , LatLng} from 'react-leaflet'
 //todo replace with common container component instead of css
 import "./mainMap.css";
 import {Checkbox, Label} from "react-bootstrap";
-import {changeLat, ChangeLat, ChangeLng, changeLng, ChangeZoom, changeZoom} from "../actions/mapActions";
+import {
+    changeLat,
+    ChangeLat,
+    ChangeLng,
+    changeLng,
+    ChangeZoom,
+    changeZoom, FetchElevation,
+    fetchElevation
+} from "../actions/mapActions";
 
 interface IMapDispatchToProps {
     changeLat : (lat : number)  => ChangeLat;
     changeZoom : (zoom : number)  => ChangeZoom;
     changeLng : (lng : number)  => ChangeLng;
+    fetchElevation : (data : LatLng[]) => FetchElevation;
 }
 
 interface IMapStateToProps {
@@ -22,15 +31,33 @@ interface IMapStateToProps {
 interface InnerState {
     searchCheckbox : boolean;
     address : string;
+    southEnd: any;
+    northEnd: any;
 }
 
 class MainMap extends React.Component<IMapDispatchToProps & IMapStateToProps, InnerState>  {
+
+    componentDidUpdate(prevProps: Readonly<IMapDispatchToProps & IMapStateToProps>, prevState: Readonly<InnerState>, snapshot?: any): void {
+        // @ts-ignore
+        let y  = this.refs.map.leafletElement.getBounds();
+
+        let north = y.getNorthEast();
+        let south = y.getSouthEast();
+        if(this.state.southEnd.lat != south.lat && this.state.southEnd.lng != south.lng && this.state.northEnd.lat != north.lat && this.state.northEnd.lng != north.lng){
+            this.setState({
+                southEnd : y.getSouthWest(),
+                northEnd : y.getNorthEast()
+            })
+        }
+    }
 
     constructor(props : any) {
         super(props);
         this.state = {
             searchCheckbox : true,
-            address: ''
+            address: '',
+            southEnd: 0,
+            northEnd : 0
         }
     }
 
@@ -71,14 +98,14 @@ class MainMap extends React.Component<IMapDispatchToProps & IMapStateToProps, In
 
                 <button className="btn btn-secondary" onClick={(e ) =>{
                     e.preventDefault();
-                    console.log("process")
+                    this.props.fetchElevation([this.state.northEnd,this.state.southEnd]);
                 }}>Process</button>
                     </div>
                     </div>
-                    <Map center={position} zoom={this.props.zoom} className="map-main-container">
+                    <Map center={position} zoom={this.props.zoom} className="map-main-container" ref={"map"}>
                         <TileLayer
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+                            url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+                            attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
                         />
                         <Marker position={position}>
                             <Popup>A pretty CSS3 popup.<br />Easily customizable.</Popup>
@@ -91,7 +118,8 @@ class MainMap extends React.Component<IMapDispatchToProps & IMapStateToProps, In
 const mapDispatchToProps = {
     changeLat,
     changeZoom,
-    changeLng
+    changeLng,
+    fetchElevation
 }
 
 const mapStateToProps = (state : any) => ({
